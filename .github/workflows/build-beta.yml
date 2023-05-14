@@ -40,7 +40,7 @@ jobs:
       - name: Get asset
         id: get-asset
         run: |
-          APK_PATH=$(find fenix/app/fenix -type f -name "*.apk")
+          APK_PATH=$(find fenix/app/build/outputs/apk/beta -type f -name "*.apk")
           APK_NAME=$(basename $APK_PATH)
           VERSION=$(echo $APK_PATH | sed -r 's/^.*-(.*-.*).apk/\1/')
           echo ::set-output name=apk_path::$APK_PATH
