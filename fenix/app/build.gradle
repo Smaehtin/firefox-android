@@ -85,6 +85,19 @@ android {
         ]
     }
 
+    signingConfigs {
+        release {
+            def keystorePropertiesFile = rootProject.file("keystore.properties")
+            def keystoreProperties = new Properties()
+            keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
     def releaseTemplate = {
         // We allow disabling optimization by passing `-PdisableOptimization` to gradle. This is used
         // in automation for UI testing non-debug builds.
@@ -95,7 +108,7 @@ android {
 
         // Changing the build config can cause files that depend on BuildConfig.java to recompile
         // so we only set the git hash in release builds to avoid possible recompilation in debug builds.
-        buildConfigField "String", "GIT_HASH", "\"${Config.getGitHash()}\""
+        buildConfigField "String", "GIT_HASH", "1234"
 
         if (gradle.hasProperty("localProperties.autosignReleaseWithDebugKey")) {
             signingConfig signingConfigs.debug
@@ -204,11 +217,15 @@ android {
 
     splits {
         abi {
+            def isDebug = gradle.startParameter.taskNames.any { it.contains("Debug") }
             enable true
 
             reset()
-
-            include "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
+            if (isDebug) {
+                include "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
+            } else {
+                include "arm64-v8a"
+            }
         }
     }
 
@@ -267,17 +284,17 @@ android.applicationVariants.all { variant ->
     println("Application ID:    " + [variant.applicationId, variant.buildType.applicationIdSuffix].findAll().join())
     println("Build type:        " + variant.buildType.name)
     println("Flavor:            " + variant.flavorName)
-    println("Telemetry enabled: " + !isDebug)
+    println("Telemetry enabled: " + !isDebug + " (Force disabled)")
 
     if (useReleaseVersioning) {
         // The Google Play Store does not allow multiple APKs for the same app that all have the
         // same version code. Therefore we need to have different version codes for our ARM and x86
         // builds.
 
-        def versionName = variant.buildType.name == 'nightly' ? Config.nightlyVersionName() : Config.releaseVersionName(project)
+        def versionName = variant.buildType.name == 'nightly' || variant.buildType.name == 'beta' ? Config.nightlyVersionName() : Config.releaseVersionName(project)
         println("versionName override: $versionName")
 
-        variant.outputs.each { output ->
+        variant.outputs.all { output ->
             def isMozillaOnline = project.hasProperty("mozillaOnline") || gradle.hasProperty("localProperties.mozillaOnline")
             def abi = output.getFilter(OutputFile.ABI)
             // If it is a Mozilla Online build, use a unified version code of armeabi-v7a
@@ -290,6 +307,8 @@ android.applicationVariants.all { variant ->
 
             output.versionNameOverride = versionName
             output.versionCodeOverride = versionCodeOverride
+
+            outputFileName = "${variant.applicationId}-${versionName}-${versionCodeOverride}.apk"
         }
     } else if (gradle.hasProperty("localProperties.branchBuild.fenix.version")) {
         def versionName = gradle.getProperty("localProperties.branchBuild.fenix.version")
@@ -316,7 +335,7 @@ android.applicationVariants.all { variant ->
     }
 
     if (!isDebug) {
-        buildConfigField 'boolean', 'TELEMETRY', 'true'
+        buildConfigField 'boolean', 'TELEMETRY', 'false'
     } else {
         buildConfigField 'boolean', 'TELEMETRY', 'false'
     }

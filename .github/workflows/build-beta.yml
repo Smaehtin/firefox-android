@@ -1,0 +1,67 @@
+name: Build beta
+
+on:
+  schedule:
+    - cron: '0 1 * * *' # Every day at 01:00
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Keystore
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+          KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          cd fenix
+          mkdir keystore
+          echo $KEYSTORE_FILE | base64 -di > ./keystore/fenix.jks
+          echo keyAlias=$KEYSTORE_KEY_ALIAS >> ./keystore.properties
+          echo keyPassword=$KEYSTORE_KEY_PASSWORD >> ./keystore.properties
+          echo storeFile=../keystore/fenix.jks >> ./keystore.properties
+          echo storePassword=$KEYSTORE_PASSWORD >> ./keystore.properties
+      - name: Build
+        env:
+          JAVA_OPTS: -Xmx4096m -XX:+HeapDumpOnOutOfMemoryError
+          GRADLE_OPTS: -Xmx4096m -XX:+HeapDumpOnOutOfMemoryError
+        run: |
+          cd fenix
+          mkdir -p ~/.gradle && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
+          ./gradlew clean app:assembleBeta --no-daemon
+      - name: Get asset
+        id: get-asset
+        run: |
+          APK_PATH=$(find fenix/app/build/outputs/apk/beta -type f -name "*.apk")
+          APK_NAME=$(basename $APK_PATH)
+          VERSION=$(echo $APK_PATH | sed -r 's/^.*-(.*-.*).apk/\1/')
+          echo ::set-output name=apk_path::$APK_PATH
+          echo ::set-output name=apk_name::$APK_NAME
+          echo ::set-output name=version::$VERSION
+      - name: Create release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: beta/${{ steps.get-asset.outputs.version }}
+          release_name: Beta ${{ steps.get-asset.outputs.version }}
+          draft: false
+          prerelease: true
+      - name: Upload asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          asset_content_type: application/octet-stream
+          asset_name: ${{ steps.get-asset.outputs.apk_name }}
+          asset_path: ${{ steps.get-asset.outputs.apk_path }}
+          upload_url: ${{ steps.create-release.outputs.upload_url }}

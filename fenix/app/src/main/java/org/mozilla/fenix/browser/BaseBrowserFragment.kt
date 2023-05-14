@@ -1285,19 +1285,25 @@ abstract class BaseBrowserFragment :
      */
     protected open fun removeSessionIfNeeded(): Boolean {
         getCurrentTab()?.let { session ->
-            return if (session.source is SessionState.Source.External && !session.restored) {
+            if (session.source is SessionState.Source.External && !session.restored) {
                 activity?.finish()
                 requireComponents.useCases.tabsUseCases.removeTab(session.id)
-                true
+
             } else {
-                val hasParentSession = session is TabSessionState && session.parentId != null
-                if (hasParentSession) {
-                    requireComponents.useCases.tabsUseCases.removeTab(session.id, selectParentIfExists = true)
+                homeViewModel.sessionToDelete = session.id
+
+                val previousTab = requireComponents.core.store.state.tabs
+                    .asSequence()
+                    .filter { it.id != session.id }
+                    .sortedByDescending { it.lastAccess }
+                    .firstOrNull()
+
+                previousTab?.let {
+                    homeViewModel.tabToSelect = it.id
                 }
-                // We want to return to home if this session didn't have a parent session to select.
-                val goToOverview = !hasParentSession
-                !goToOverview
             }
+
+            true
         }
         return false
     }

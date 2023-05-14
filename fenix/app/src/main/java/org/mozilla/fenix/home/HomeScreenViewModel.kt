@@ -11,4 +11,6 @@ class HomeScreenViewModel : ViewModel() {
      * Used to delete a specific session once the home screen is resumed
      */
     var sessionToDelete: String? = null
+
+    var tabToSelect: String? = null
 }

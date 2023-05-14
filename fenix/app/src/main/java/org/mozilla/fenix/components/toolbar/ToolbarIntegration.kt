@@ -112,7 +112,7 @@ class DefaultToolbarIntegration(
             DisplayToolbar.Indicators.HIGHLIGHT,
         )
 
-        val tabCounterMenu = FenixTabCounterMenu(
+        FenixTabCounterMenu(
             context = context,
             onItemTapped = {
                 interactor.onTabCounterMenuItemTapped(it)
@@ -126,14 +126,22 @@ class DefaultToolbarIntegration(
             it.updateMenu(context.settings().toolbarPosition)
         }
 
-        val tabsAction = TabCounterToolbarButton(
+        val tabsAction = MyTabCounterToolbarButton(
             lifecycleOwner = lifecycleOwner,
             showTabs = {
                 toolbar.hideKeyboard()
                 interactor.onTabCounterClicked()
             },
+            openNewTab = {
+                interactor.onTabCounterMenuItemLongPressed()
+            },
+            closeTab = {
+                interactor.onTabCounterMenuItemSwipeUp()
+            },
+            undoCloseTab = {
+                interactor.onTabCounterMenuItemSwipeDown()
+            },
             store = store,
-            menu = tabCounterMenu,
         )
 
         val tabCount = if (isPrivate) {

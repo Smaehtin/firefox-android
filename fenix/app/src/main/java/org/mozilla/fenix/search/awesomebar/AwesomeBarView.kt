@@ -553,7 +553,7 @@ class AwesomeBarView(
 
     companion object {
         // Maximum number of suggestions returned.
-        const val METADATA_SUGGESTION_LIMIT = 3
+        const val METADATA_SUGGESTION_LIMIT = 20
 
         const val GOOGLE_SEARCH_ENGINE_NAME = "Google"
 

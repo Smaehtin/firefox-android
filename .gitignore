@@ -44,6 +44,8 @@ captures/
 
 # Keystore files
 *.jks
+*.keystore
+keystore.properties
 
 # OS X
 .DS_Store

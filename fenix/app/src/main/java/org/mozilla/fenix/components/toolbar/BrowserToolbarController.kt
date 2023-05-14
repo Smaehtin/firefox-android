@@ -47,6 +47,10 @@ interface BrowserToolbarController {
      * @see [BrowserToolbarInteractor.onHomeButtonClicked]
      */
     fun handleHomeButtonClick()
+
+    fun handleTabCounterLongPress()
+    fun handleTabCounterMenuItemSwipeUp()
+    fun handleTabCounterMenuItemSwipeDown()
 }
 
 @Suppress("LongParameterList")
@@ -174,10 +178,46 @@ class DefaultBrowserToolbarController(
     override fun handleHomeButtonClick() {
         Events.browserToolbarHomeTapped.record(NoExtras())
         browserAnimator.captureEngineViewAndDrawStatically {
+            store.state.selectedTabId?.let {
+                homeViewModel.sessionToDelete = it
+            }
+
             navController.navigate(
                 BrowserFragmentDirections.actionGlobalHome(),
             )
         }
+    }
+
+    override fun handleTabCounterLongPress() {
+        navController.navigate(
+            BrowserFragmentDirections.actionGlobalHome(focusOnAddressBar = true)
+        )
+    }
+
+    override fun handleTabCounterMenuItemSwipeUp() {
+        browserAnimator.captureEngineViewAndDrawStatically {
+            store.state.selectedTabId?.let { selectedTab ->
+                homeViewModel.sessionToDelete = selectedTab
+
+                val previousTab = store.state.tabs
+                    .asSequence()
+                    .filter { tab -> tab.id != selectedTab }
+                    .sortedByDescending { tab -> tab.lastAccess }
+                    .firstOrNull()
+
+                previousTab?.let {
+                    homeViewModel.tabToSelect = it.id
+                }
+            }
+
+            navController.navigate(
+                BrowserFragmentDirections.actionGlobalHome()
+            )
+        }
+    }
+
+    override fun handleTabCounterMenuItemSwipeDown() {
+        tabsUseCases.undo.invoke()
     }
 
     companion object {

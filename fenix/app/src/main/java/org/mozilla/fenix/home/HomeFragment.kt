@@ -276,7 +276,7 @@ class HomeFragment : Fragment() {
             topSitesFeature.set(
                 feature = TopSitesFeature(
                     view = DefaultTopSitesView(
-                        appStore = components.appStore,
+                        store = components.appStore,
                         settings = components.settings,
                     ),
                     storage = components.core.topSitesStorage,
@@ -563,9 +563,19 @@ class HomeFragment : Fragment() {
             } else {
                 removeTabAndShowSnackbar(it)
             }
+
+            homeViewModel.sessionToDelete = null
         }
 
-        homeViewModel.sessionToDelete = null
+        homeViewModel.tabToSelect?.also {
+            requireComponents.useCases.tabsUseCases.selectTab(it)
+
+            findNavController().navigate(
+                HomeFragmentDirections.actionGlobalBrowser(null)
+            )
+
+            homeViewModel.tabToSelect = null
+        }
 
         tabCounterView?.update(requireComponents.core.store.state)
 
