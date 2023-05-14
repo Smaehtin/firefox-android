@@ -36,7 +36,7 @@ jobs:
         run: |
           cd fenix
           mkdir -p ~/.gradle && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
-          ./gradlew clean app:assembleBeta --no-daemon
+          ./gradlew clean app:assembleBeta --no-daemon --debug
       - name: Get asset
         id: get-asset
         run: |
