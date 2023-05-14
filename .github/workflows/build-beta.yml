@@ -31,12 +31,12 @@ jobs:
           echo storePassword=$KEYSTORE_PASSWORD >> ./keystore.properties
       - name: Build
         env:
-          JAVA_OPTS: -Xmx4608m -XX:+HeapDumpOnOutOfMemoryError
-          GRADLE_OPTS: -Xmx4608m -XX:+HeapDumpOnOutOfMemoryError
+          JAVA_OPTS: -Xmx6144m -XX:+HeapDumpOnOutOfMemoryError
+          GRADLE_OPTS: -Xmx6144m -XX:+HeapDumpOnOutOfMemoryError
         run: |
           cd fenix
           mkdir -p ~/.gradle && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
-          ./gradlew clean app:assembleBeta --no-daemon --debug
+          ./gradlew clean app:assembleBeta --no-daemon
       - name: Get asset
         id: get-asset
         run: |
