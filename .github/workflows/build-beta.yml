@@ -31,8 +31,8 @@ jobs:
           echo storePassword=$KEYSTORE_PASSWORD >> ./keystore.properties
       - name: Build
         env:
-          JAVA_OPTS: -Xmx6144m -XX:+HeapDumpOnOutOfMemoryError
-          GRADLE_OPTS: -Xmx6144m -XX:+HeapDumpOnOutOfMemoryError
+          JAVA_OPTS: -Xmx6144m -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError
+          GRADLE_OPTS: -Xmx6144m -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError
         run: |
           cd fenix
           mkdir -p ~/.gradle && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
