@@ -306,7 +306,9 @@ android.applicationVariants.all { variant ->
 
             println("versionCode for $abi = $versionCodeOverride, isMozillaOnline = $isMozillaOnline")
 
-            output.versionNameOverride = versionName
+            if (versionName != null) {
+                output.versionNameOverride = versionName
+            }
             output.versionCodeOverride = versionCodeOverride
 
             outputFileName = "${variant.applicationId}-${versionName}-${versionCodeOverride}.apk"
