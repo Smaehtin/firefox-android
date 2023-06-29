@@ -46,6 +46,7 @@ open class OnSwipeTouchListener(ctx: Context?) : View.OnTouchListener {
             return super.onSingleTapConfirmed(e)
         }
 
+        @Suppress("NOTHING_TO_OVERRIDE", "ACCIDENTAL_OVERRIDE")
         override fun onFling(
             e1: MotionEvent,
             e2: MotionEvent,
