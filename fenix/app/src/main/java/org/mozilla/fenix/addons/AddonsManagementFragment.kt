@@ -79,7 +79,7 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management) 
                 provideAddons = { addons },
                 context = requireContext(),
                 fragmentManager = parentFragmentManager,
-                view = view,
+                snackBarParentView = view,
                 onAddonChanged = {
                     runIfFragmentIsAttached {
                         adapter?.updateAddon(it)
@@ -131,7 +131,7 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management) 
                     runIfFragmentIsAttached {
                         if (!shouldRefresh) {
                             adapter = AddonsManagerAdapter(
-                                requireContext().components.addonCollectionProvider,
+                                requireContext().components.addonsProvider,
                                 managementView,
                                 addons,
                                 style = createAddonStyle(requireContext()),
