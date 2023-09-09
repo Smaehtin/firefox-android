@@ -28,6 +28,11 @@ interface BrowserToolbarInteractor {
      */
     fun onHomeButtonClicked()
 
+    /**
+     * Deletes all tabs and navigates to the Home screen. Called when a user taps on the erase button.
+     */
+    fun onEraseButtonClicked()
+    
     fun onTabCounterMenuItemLongPressed()
     fun onTabCounterMenuItemSwipeUp()
     fun onTabCounterMenuItemSwipeDown()
@@ -43,7 +48,6 @@ interface BrowserToolbarInteractor {
  */
 class DefaultBrowserToolbarInteractor(
     private val browserToolbarController: BrowserToolbarController,
-    private val menuController: BrowserToolbarMenuController,
 ) : BrowserToolbarInteractor {
 
     override fun onTabCounterClicked() {
@@ -82,6 +86,10 @@ class DefaultBrowserToolbarInteractor(
         browserToolbarController.handleHomeButtonClick()
     }
 
+    override fun onEraseButtonClicked() {
+        browserToolbarController.handleEraseButtonClick()
+    }
+    
     override fun onTabCounterMenuItemLongPressed() {
         browserToolbarController.handleTabCounterLongPress()
     }
