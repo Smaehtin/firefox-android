@@ -53,6 +53,11 @@ interface BrowserToolbarController {
      * @see [BrowserToolbarInteractor.onEraseButtonClicked]
      */
     fun handleEraseButtonClick()
+
+    /**
+     * @see [BrowserToolbarInteractor.onShoppingCfrActionClicked]
+     */
+    fun handleShoppingCfrActionClick()
     
     fun handleTabCounterLongPress()
     fun handleTabCounterMenuItemSwipeUp()
@@ -230,6 +235,13 @@ class DefaultBrowserToolbarController(
 
     override fun handleTabCounterMenuItemSwipeDown() {
         tabsUseCases.undo.invoke()
+    }
+
+    override fun handleShoppingCfrActionClick() {
+        activity.settings().shouldShowReviewQualityCheckCFR = false
+        navController.navigate(
+            BrowserFragmentDirections.actionBrowserFragmentToReviewQualityCheckDialogFragment(),
+        )
     }
 
     companion object {
