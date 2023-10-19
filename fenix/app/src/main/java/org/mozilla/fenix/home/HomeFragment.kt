@@ -745,6 +745,11 @@ class HomeFragment : Fragment() {
         lastAppliedWallpaperName = Wallpaper.defaultName
     }
 
+    override fun onStop() {
+        dismissRecommendPrivateBrowsingShortcut()
+        super.onStop()
+    }
+
     override fun onStart() {
         super.onStart()
 
@@ -873,7 +878,7 @@ class HomeFragment : Fragment() {
                     PrivateBrowsingShortcutCfr.cancel.record()
                     context.settings().showedPrivateModeContextualFeatureRecommender = true
                     context.settings().lastCfrShownTimeInMillis = System.currentTimeMillis()
-                    recommendPrivateBrowsingCFR?.dismiss()
+                    dismissRecommendPrivateBrowsingShortcut()
                 },
                 text = {
                     FirefoxTheme {
@@ -897,7 +902,7 @@ class HomeFragment : Fragment() {
                                 PrivateShortcutCreateManager.createPrivateShortcut(context)
                                 context.settings().showedPrivateModeContextualFeatureRecommender = true
                                 context.settings().lastCfrShownTimeInMillis = System.currentTimeMillis()
-                                recommendPrivateBrowsingCFR?.dismiss()
+                                dismissRecommendPrivateBrowsingShortcut()
                             },
                             colors = ButtonDefaults.buttonColors(backgroundColor = PhotonColors.LightGrey30),
                             shape = RoundedCornerShape(8.dp),
@@ -922,7 +927,7 @@ class HomeFragment : Fragment() {
                                 PrivateBrowsingShortcutCfr.cancel.record()
                                 context.settings().showedPrivateModeContextualFeatureRecommender = true
                                 context.settings().lastCfrShownTimeInMillis = System.currentTimeMillis()
-                                recommendPrivateBrowsingCFR?.dismiss()
+                                dismissRecommendPrivateBrowsingShortcut()
                             },
                             modifier = Modifier
                                 .heightIn(36.dp)
@@ -946,6 +951,11 @@ class HomeFragment : Fragment() {
                 show()
             }
         }
+    }
+
+    private fun dismissRecommendPrivateBrowsingShortcut() {
+        recommendPrivateBrowsingCFR?.dismiss()
+        recommendPrivateBrowsingCFR = null
     }
 
     private fun subscribeToTabCollections(): Observer<List<TabCollection>> {

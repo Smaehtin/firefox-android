@@ -146,6 +146,8 @@ class DefaultToolbarIntegration(
                 interactor.onTabCounterMenuItemSwipeDown()
             },
             store = store,
+            menu = tabCounterMenu,
+            showMaskInPrivateMode = context.settings().feltPrivateBrowsingEnabled,
         )
 
         val tabCount = if (isPrivate) {
