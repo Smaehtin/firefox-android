@@ -14,6 +14,7 @@ import mozilla.components.concept.toolbar.Toolbar
 import mozilla.components.lib.state.ext.flowScoped
 import mozilla.components.support.ktx.android.content.res.resolveAttribute
 import mozilla.components.ui.tabcounter.TabCounter
+import mozilla.components.ui.tabcounter.TabCounterMenu
 import org.mozilla.fenix.R
 import java.lang.ref.WeakReference
 
@@ -29,6 +30,8 @@ open class MyTabCounterToolbarButton(
     private val closeTab: () -> Unit,
     private val undoCloseTab: () -> Unit,
     private val store: BrowserStore,
+    private val menu: TabCounterMenu? = null,
+    private val showMaskInPrivateMode: Boolean = false,
 ) : Toolbar.Action {
 
     private var reference = WeakReference<TabCounter>(null)
@@ -45,42 +48,50 @@ open class MyTabCounterToolbarButton(
         val tabCounter = TabCounter(parent.context).apply {
             reference = WeakReference(this)
 
-            setOnTouchListener(object : OnSwipeTouchListener(context) {
-                override fun onLongPress() {
-                    openNewTab()
-                }
+            menu?.let {
+                setOnTouchListener(
+                    object : OnSwipeTouchListener(context) {
+                        override fun onLongPress() {
+                            openNewTab()
+                        }
 
-                override fun onSwipeTop() {
-                    closeTab()
-                }
+                        override fun onSwipeTop() {
+                            closeTab()
+                        }
 
-                override fun onSwipeBottom() {
-                    undoCloseTab()
-                }
+                        override fun onSwipeBottom() {
+                            undoCloseTab()
+                        }
 
-                override fun onClick() {
-                    showTabs.invoke()
-                }
-            })
+                        override fun onClick() {
+                            showTabs.invoke()
+                        }
+                    },
+                )
+            }
 
-            addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-                override fun onViewAttachedToWindow(v: View) {
-                    setCount(getTabCount(store.state))
-                }
+            addOnAttachStateChangeListener(
+                object : View.OnAttachStateChangeListener {
+                    override fun onViewAttachedToWindow(v: View) {
+                        setCount(getTabCount(store.state))
+                    }
 
-                override fun onViewDetachedFromWindow(v: View) { /* no-op */
-                }
-            })
+                    override fun onViewDetachedFromWindow(v: View) { /* no-op */
+                    }
+                },
+            )
 
             contentDescription =
                 parent.context.getString(R.string.mozac_feature_tabs_toolbar_tabs_button)
+
+            toggleCounterMask(showMaskInPrivateMode && isPrivate(store))
         }
 
         // Set selectableItemBackgroundBorderless
         tabCounter.setBackgroundResource(
             parent.context.theme.resolveAttribute(
-                android.R.attr.selectableItemBackgroundBorderless
-            )
+                android.R.attr.selectableItemBackgroundBorderless,
+            ),
         )
 
         return tabCounter

@@ -116,7 +116,7 @@ class DefaultToolbarIntegration(
             DisplayToolbar.Indicators.HIGHLIGHT,
         )
 
-        FenixTabCounterMenu(
+        val tabCounterMenu = FenixTabCounterMenu(
             context = context,
             onItemTapped = {
                 interactor.onTabCounterMenuItemTapped(it)

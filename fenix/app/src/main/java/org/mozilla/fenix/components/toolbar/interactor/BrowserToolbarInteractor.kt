@@ -64,6 +64,7 @@ interface BrowserToolbarInteractor {
  */
 class DefaultBrowserToolbarInteractor(
     private val browserToolbarController: BrowserToolbarController,
+    private val menuController: BrowserToolbarMenuController,
 ) : BrowserToolbarInteractor {
 
     override fun onTabCounterClicked() {
