@@ -57,9 +57,9 @@ interface BrowserToolbarInteractor {
 /**
  * The default implementation of [BrowserToolbarInteractor].
  *
- * @property browserToolbarController [BrowserToolbarController] to which user actions can be
+ * @param browserToolbarController [BrowserToolbarController] to which user actions can be
  * delegated for all interactions on the browser toolbar.
- * @property menuController [BrowserToolbarMenuController] to which user actions can be delegated
+ * @param menuController [BrowserToolbarMenuController] to which user actions can be delegated
  * for all interactions on the the browser toolbar menu.
  */
 class DefaultBrowserToolbarInteractor(
