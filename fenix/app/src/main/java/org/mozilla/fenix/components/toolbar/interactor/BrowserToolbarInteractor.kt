@@ -43,9 +43,9 @@ interface BrowserToolbarInteractor {
     fun onTabCounterMenuItemSwipeDown()
 
     /**
-     * Updates the settings for the shopping CFR. Called when the user dismisses the shopping cfr action.
+     * Updates the settings for the shopping CFR. Called when the user is shown the CFR.
      */
-    fun onShoppingCfrDismiss()
+    fun onShoppingCfrDisplayed()
 
     /**
      * Opens the translation bottom sheet. Called when the user interacts with the translation
@@ -123,8 +123,8 @@ class DefaultBrowserToolbarInteractor(
         browserToolbarController.handleTabCounterMenuItemSwipeDown()
     }
     
-    override fun onShoppingCfrDismiss() {
-        browserToolbarController.handleShoppingCfrDismiss()
+    override fun onShoppingCfrDisplayed() {
+        browserToolbarController.handleShoppingCfrDisplayed()
     }
 
     override fun onTranslationsButtonClicked() {
