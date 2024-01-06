@@ -74,6 +74,7 @@ fastlane/
 .nimbus
 .wallpaper_url
 .pocket_consumer_key
+fenix/app/src/**/res/values/fenix_firebase_push_credentials.xml
 
 # Python Byte-compiled / optimized / DLL files
 __pycache__/
