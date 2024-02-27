@@ -242,6 +242,10 @@
     <string name="browser_toolbar_erase">Erase browsing history</string>
     <!-- Content description for the translate page toolbar button that opens the translations dialog when no translation has occurred. -->
     <string name="browser_toolbar_translate">Translate page</string>
+    <!-- Content description (not visible, for screen readers etc.) for the translate page toolbar button that opens the translations dialog when the page is translated successfully.
+         The first parameter is the name of the language that is displayed in the original page. (For example: English)
+         The second parameter is the name of the language which the page was translated to. (For example: French) -->
+    <string name="browser_toolbar_translated_successfully">Page translated from %1$s to %2$s.</string>
 
     <!-- Locale Settings Fragment -->
     <!-- Content description for tick mark on selected language -->
@@ -1840,11 +1844,13 @@
     <!-- Title of the "Manage addresses" screen -->
     <string name="addresses_manage_addresses">Manage addresses</string>
     <!-- The header for the first name of an address -->
-    <string name="addresses_first_name">First Name</string>
+    <string name="addresses_first_name" moz:removedIn="124" tools:ignore="UnusedResources">First Name</string>
     <!-- The header for the middle name of an address -->
-    <string name="addresses_middle_name">Middle Name</string>
+    <string name="addresses_middle_name" moz:removedIn="124" tools:ignore="UnusedResources">Middle Name</string>
     <!-- The header for the last name of an address -->
-    <string name="addresses_last_name">Last Name</string>
+    <string name="addresses_last_name" moz:removedIn="124" tools:ignore="UnusedResources">Last Name</string>
+    <!-- The header for the name of an address. Name represents a person's full name, typically made up of a first, middle and last name, e.g. John Joe Doe. -->
+    <string name="addresses_name">Name</string>
     <!-- The header for the street address of an address -->
     <string name="addresses_street_address">Street Address</string>
     <!-- The header for the city of an address -->
