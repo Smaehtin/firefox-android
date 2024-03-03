@@ -152,7 +152,7 @@ class DefaultToolbarIntegration(
                 menu = tabCounterMenu,
                 showMaskInPrivateMode = context.settings().feltPrivateBrowsingEnabled,
             )
-            
+
             val tabCount = if (isPrivate) {
                 store.state.privateTabs.size
             } else {
