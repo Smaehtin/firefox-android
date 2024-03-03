@@ -52,6 +52,11 @@ interface BrowserToolbarInteractor {
      * action.
      */
     fun onTranslationsButtonClicked()
+
+    /**
+     * Opens the share fragment.  Called when the user clicks the "Share" action in the toolbar.
+     */
+    fun onShareActionClicked()
 }
 
 /**
@@ -129,5 +134,9 @@ class DefaultBrowserToolbarInteractor(
 
     override fun onTranslationsButtonClicked() {
         browserToolbarController.handleTranslationsButtonClick()
+    }
+
+    override fun onShareActionClicked() {
+        browserToolbarController.onShareActionClicked()
     }
 }
