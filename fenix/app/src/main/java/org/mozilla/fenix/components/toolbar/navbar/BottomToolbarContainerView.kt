@@ -22,7 +22,6 @@ import mozilla.components.lib.state.ext.observeAsState
 import mozilla.components.ui.widgets.behavior.EngineViewScrollingBehavior
 import mozilla.components.ui.widgets.behavior.ViewPosition
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
-import org.mozilla.fenix.browser.browsingmode.BrowsingModeManager
 import org.mozilla.fenix.compose.Divider
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.theme.FirefoxTheme
@@ -35,8 +34,7 @@ import org.mozilla.fenix.theme.FirefoxTheme
  * @param navigationItems A list of [ActionItem] objects representing the items to be displayed in the navigation bar.
  * @param androidToolbarView An option toolbar view that will be added atop of the navigation bar.
  * @param menuButton A [MenuButton] to be used for [ItemType.MENU].
- * @param browsingModeManager A helper class that provides access to the current [BrowsingMode].
- * @param customTabSessionId Custom tab session ID.
+ * @param isPrivateMode If browsing in [BrowsingMode.Private].
  *
  * Defaults to [NavigationItems.defaultItems] which provides a standard set of navigation items.
  */
@@ -46,20 +44,17 @@ class BottomToolbarContainerView(
     navigationItems: List<ActionItem> = NavigationItems.defaultItems,
     androidToolbarView: View? = null,
     menuButton: MenuButton,
-    browsingModeManager: BrowsingModeManager,
-    customTabSessionId: String? = null,
+    isPrivateMode: Boolean = false,
 ) {
 
-    private val toolbarContainerView = ToolbarContainerView(context)
-    val navbarIntegration =
-        NavbarIntegration(toolbarContainerView, parent.context.components.core.store, customTabSessionId)
+    val toolbarContainerView = ToolbarContainerView(context)
+    val composeView: ComposeView
 
     init {
-        ComposeView(parent.context).apply {
+        composeView = ComposeView(context).apply {
             setContent {
-                val isPrivate = browsingModeManager.mode.isPrivate
                 val tabCount = context.components.core.store.observeAsState(initialValue = 0) { browserState ->
-                    if (isPrivate) {
+                    if (isPrivateMode) {
                         browserState.privateTabs.size
                     } else {
                         browserState.normalTabs.size
