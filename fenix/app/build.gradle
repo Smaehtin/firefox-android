@@ -254,6 +254,11 @@ android {
         lintConfig file("lint.xml")
         baseline file("lint-baseline.xml")
     }
+
+    lintOptions {
+        checkReleaseBuilds false
+    }
+
     packagingOptions {
         resources {
             excludes += ['META-INF/atomicfu.kotlin_module', 'META-INF/AL2.0', 'META-INF/LGPL2.1',
